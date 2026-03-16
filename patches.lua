@@ -184,9 +184,11 @@ function M.patchFileManagerClass(plugin)
         plugin:_registerTouchZones(fm_self)
 
         -- onPathChanged: update the active tab when the user navigates directories.
+        -- Falls back to "home" when the path does not match any configured tab,
+        -- since the FM is always showing the file browser (Library).
         fm_self.onPathChanged = function(this, new_path)
             local t          = Config.loadTabConfig()
-            local new_active = M._resolveTabForPath(new_path, t)
+            local new_active = M._resolveTabForPath(new_path, t) or "home"
             plugin.active_action = new_active
             if this._navbar_container then
                 Bottombar.replaceBar(this, Bottombar.buildBarWidget(new_active, t), t)
