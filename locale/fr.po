@@ -260,7 +260,7 @@ msgid "Icons only"
 msgstr "Icônes uniquement"
 
 msgid "Invalid arrangement.\nKeep items between the Left and Right separators."
-msgstr "Disposition invalide.\nGardez les éléments entre les séparateurs Gauche et Droite."
+msgstr "Organisation invalide.\nGardez les éléments entre les séparateurs Gauche et Droite."
 
 msgid "Items"
 msgstr "Éléments"
@@ -935,10 +935,10 @@ msgid "Uniformize Covers (2:3)"
 msgstr "Uniformiser les couvertures (2:3)"
 
 msgid "Invalid arrangement.\nKeep the Left, Center and Right separators in order."
-msgstr "Disposition invalide.\nGardez les séparateurs Gauche, Centre et Droite dans l'ordre."
+msgstr "Organisation invalide.\nGardez les séparateurs Gauche, Centre et Droite dans l'ordre."
 
 msgid "Invalid arrangement.\nKeep items between the Left and Right separators."
-msgstr "Disposition invalide.\nGardez les éléments entre les séparateurs Gauche et Droite."
+msgstr "Organisation invalide.\nGardez les éléments entre les séparateurs Gauche et Droite."
 
 msgid "Fetching bookmarks\xe2\x80\xa6"
 msgstr "Récupération des signets\xe2\x80\xa6"
