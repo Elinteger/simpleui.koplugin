@@ -75,6 +75,35 @@ function M.patchFileManagerClass(plugin)
     -- Navbar touch zones must run before FileChooser/scroll children (sui_core).
     UI.applyGesturePriorityHandleEvent(FileManager)
 
+    -- The KOReader filemanager_swipe touch zone handler calls onSwipeFM but
+    -- does not return true, so InputContainer.onGesture considers the event
+    -- unconsumed and the event propagates a second time through
+    -- WidgetContainer children (FileManagerMenu, etc.), causing every
+    -- horizontal swipe in the library to advance two pages instead of one.
+    -- Patch initGesListener to re-register the zone with a handler that
+    -- returns true, consuming the event after the page turn.
+    local orig_initGesListener        = FileManager.initGesListener
+    plugin._orig_initGesListener      = orig_initGesListener
+    FileManager._simpleui_ges_patched = false
+    FileManager.initGesListener = function(fm_self)
+        orig_initGesListener(fm_self)
+        -- Override the zone registered above so its handler returns true.
+        fm_self:registerTouchZones({
+            {
+                id          = "filemanager_swipe",
+                ges         = "swipe",
+                screen_zone = {
+                    ratio_x = 0, ratio_y = 0,
+                    ratio_w = 1, ratio_h = 1,
+                },
+                handler = function(ges)
+                    fm_self:onSwipeFM(ges)
+                    return true
+                end,
+            },
+        })
+    end
+
     FileManager.setupLayout = function(fm_self)
         local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
         fm_self._navbar_height = Bottombar.TOTAL_H() + (topbar_on and require("sui_topbar").TOTAL_TOP_H() or 0)
@@ -1460,6 +1489,11 @@ function M.teardownAll(plugin)
     local FileManager = package.loaded["apps/filemanager/filemanager"]
     if FileManager and FileManager._simpleui_gesture_priority_applied then
         UI.unapplyGesturePriorityHandleEvent(FileManager)
+    end
+    if FileManager and plugin._orig_initGesListener then
+        FileManager.initGesListener        = plugin._orig_initGesListener
+        plugin._orig_initGesListener       = nil
+        FileManager._simpleui_ges_patched  = nil
     end
     if FileManager and plugin._orig_fm_setup then
         FileManager.setupLayout = plugin._orig_fm_setup; plugin._orig_fm_setup = nil
